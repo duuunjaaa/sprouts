@@ -11,6 +11,10 @@ class Game(ABC):
         pass
     
     @abstractmethod
+    def get_state_value(self) -> float:
+        pass
+    
+    @abstractmethod
     def step(self, action: Action) -> tuple[any, bool, float]:
         pass
     

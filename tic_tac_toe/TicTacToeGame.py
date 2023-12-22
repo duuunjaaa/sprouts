@@ -17,9 +17,9 @@ class TicTacToeGame(Game):
         return actions
 
     def __is_done(self) -> bool:
-        return self.__get_state_value() != 0 or len(self.get_valid_actions()) == 0
+        return self.get_state_value() != 0 or len(self.get_valid_actions()) == 0
 
-    def __get_state_value(self):
+    def get_state_value(self):
         for i in range(3):
             if self.board[i][0] == self.board[i][1] == self.board[i][2] != 0:
                 return self.board[i][0]
@@ -35,7 +35,7 @@ class TicTacToeGame(Game):
         self.board[action.row][action.col] = self.player
         self.player = -self.player
         self.done = self.__is_done()
-        reward = self.__get_state_value()
+        reward = self.get_state_value()
         return self.board, self.done, reward
     
     def render(self):
