@@ -19,7 +19,7 @@ while not done:
         if done:
             break
 
-        comp_action = minimax.minimax(game, player_action)[1]
+        comp_action = minimax.minimax(game, player_action, float("-inf"), float("+inf"))[1]
         board, done, reward = game.step(comp_action)
         game.render()
     print("Reward:", reward)
