@@ -16,8 +16,8 @@ class SproutsGame(Game):
             new_region.append(Boundary([node]))
         self.state = [Region(new_region)]
         self.num_nodes = num_nodes
-        self.player = 0
-        self.done = False
+        self.player = 1
+        self.done = self.__is_done()
 
     def __count_occurances_in_state(self, node: Node) -> int:
         count = 0
@@ -108,9 +108,9 @@ class SproutsGame(Game):
     
     def get_state_value(self) -> float:
         if self.done:
-            # If the game is done and player 0 is next to play
-            # player 0 has lost, return -1 else return 1
-            return -1 if self.player == 0 else 1
+            # If the game is done and player 1 is next to play
+            # player 1 has lost, return -1 else return 1
+            return -1 if self.player == 1 else 1
         return 0
 
     def step(self, action: SproutsAction) -> tuple[any, bool, float]:
@@ -189,7 +189,7 @@ class SproutsGame(Game):
             self.state.append(Region(new_region2))
         
         self.num_nodes += 1
-        self.player = 1 - self.player
+        self.player = -self.player
 
         # Order of these two lines is important!
         self.done = self.__is_done()
