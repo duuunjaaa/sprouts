@@ -128,15 +128,14 @@ class SproutsGame(Game):
             action_region.boundaries.remove(action.boundary2)
 
             # Create the new boundary
-            new_boundary = []
-            new_boundary.extend(action.boundary1.nodes[:action.i+1])
-            new_boundary.append(action.new_node)
+            new_boundary = action.boundary1.nodes[:action.i+1] + [action.new_node]
             if len(action.boundary2.nodes) > 1:
-                new_boundary.extend(action.boundary2.nodes[action.j:])
-            new_boundary.extend(action.boundary2.nodes[:action.j+1])
-            new_boundary.append(action.new_node)
+                new_boundary += action.boundary2.nodes[action.j:]
+
+            new_boundary += action.boundary2.nodes[:action.j+1] + [action.new_node]
+            
             if len(action.boundary1.nodes) > 1:
-                new_boundary.extend(action.boundary1.nodes[action.i:])
+                new_boundary += action.boundary1.nodes[action.i:]
 
             # Add the new boundary
             action_region.boundaries.append(Boundary(new_boundary))
@@ -150,39 +149,25 @@ class SproutsGame(Game):
             # b1, B1 where B1 are boundaries taken inside the first new boundary
             # b2, B2 where B2 are boundaries taken outside the first new boundary
             
-            # Remove the old region
+            # Remove the old region (if there are multiple that match remove only the first one)
             for region in self.state:
                 if region == action.region:
                     self.state.remove(region)
                     break
 
             # Create the first new boundary
-            new_boundary1 = []
-            for k in range(action.i+1):
-                new_boundary1.append(action.boundary.nodes[k])
-            new_boundary1.append(action.new_node)
-
+            new_boundary1 = action.boundary.nodes[:action.i+1] + [action.new_node]
             if len(action.boundary.nodes) > 1:
-                for k in range(action.j, len(action.boundary.nodes)):
-                    new_boundary1.append(action.boundary.nodes[k])
+                new_boundary1 += action.boundary.nodes[action.j:]
             
             # Create the second new boundary
-            new_boundary2 = []
-            for k in range(action.i, action.j+1):
-                new_boundary2.append(action.boundary.nodes[k])
-            new_boundary2.append(action.new_node)
+            new_boundary2 = action.boundary.nodes[action.i:action.j+1] + [action.new_node]
 
             # Create the first new region
-            new_region1 = []
-            for boundary in action.included_boundaries:
-                new_region1.append(boundary)
-            new_region1.append(Boundary(new_boundary1))
+            new_region1 = [boundary for boundary in action.included_boundaries] + [Boundary(new_boundary1)]
 
             # Create the second new region
-            new_region2 = []
-            for boundary in action.excluded_boundaries:
-                new_region2.append(boundary)
-            new_region2.append(Boundary(new_boundary2))
+            new_region2 = [boundary for boundary in action.excluded_boundaries] + [Boundary(new_boundary2)]
 
             # Add the two new regions
             self.state.append(Region(new_region1))
@@ -196,6 +181,9 @@ class SproutsGame(Game):
         state_value = self.get_state_value()
 
         return self.state, self.done, state_value
+
+    def get_string_representation(self) -> str:
+        return ''.join([str(region) for region in self.state])
 
     def render(self):
         for region in self.state:

@@ -5,13 +5,13 @@ from solvers.Minimax import Minimax
 
 random.seed(1)
 
-game = SproutsGame(2)
+game = SproutsGame(3)
 done = game.done
 game.render()
 r = game.get_state_value()
 while not done:
     minimax = Minimax()
-    action = minimax.minimax(game, None)[1]
+    action = minimax.minimax(game)[1]
     s, done, r = game.step(action)
     game.render()
 
