@@ -4,6 +4,9 @@ import numpy as np
 import math
 import random
 from copy import deepcopy
+from graphviz import Digraph
+
+
 
 class Node:
 	def __init__(self, game:Game): 
@@ -14,6 +17,32 @@ class Node:
 		children_count = len(game.get_valid_actions())
 		self.children :list[Node] = [None for _ in range(children_count)]
 		self.reward :int = game.get_state_value()
+
+from graphviz import Digraph
+import math
+
+class Node:
+    def __init__(self, game):
+        self.n = 0
+        self.w = 0
+        self.game = game
+        self.terminal = game.done
+        self.children = [None] * len(game.get_valid_actions())
+        self.reward = game.get_state_value()
+        self.parent = None  # Add parent attribute
+
+import networkx as nx
+import matplotlib.pyplot as plt
+import math
+
+class Node:
+    def __init__(self, game):
+        self.n = 0
+        self.w = 0
+        self.game = game
+        self.terminal = game.done
+        self.children = [None] * len(game.get_valid_actions())
+        self.reward = game.get_state_value()
 
 class MCTS:
 	def __init__(self) -> None:
@@ -37,7 +66,7 @@ class MCTS:
 	def uct(self, node, parentNode) -> float:
 		if(node.n == 0):
 			return(float("inf"))
-		return(float(node.w)/node.n) + math.sqrt(2)*math.sqrt((np.log(parentNode.n))/node.n)
+		return(float(node.w)/node.n) + 20*math.sqrt((np.log(parentNode.n))/node.n)
 
 	def selection(self, node, l) -> Node:
 		l.append(node)
@@ -70,11 +99,18 @@ class MCTS:
 			node.children[i] = Node(game2)
 
 	def backprop(self, l : list[Node], res):
+		pass
 		for i in range(len(l)):
-			if res > 0 and l[i].game.player > 0:
-				l[i].w += 1
-			if res < 0 and l[i].game.player < 0:
-				l[i].w += 1
+			if res > 0:
+				if l[i].game.player < 0:
+					l[i].w += 1
+				else:
+					l[i].w -= 1
+			else:
+				if l[i].game.player > 0:
+					l[i].w += 1
+				else:
+					l[i].w -= 1
 			l[i].n += 1
 		
 
@@ -91,13 +127,13 @@ class MCTS:
 
 
 	def bestMove(self, node : Node) -> Action:
-		maxVal = float("-inf")
+		max_score = float("-inf")
 		maxMove = None
 		for i in range(len(node.children)):
 			if(node.children[i] != None):
-				uctVal = self.uct(node.children[i],node) 
-				if(uctVal > maxVal):
-					maxVal = uctVal
+				win_cnt = node.children[i].w
+				if(win_cnt > max_score):
+					max_score = win_cnt
 					maxMove = node.game.get_valid_actions()[i]
 		return(maxMove)
 			

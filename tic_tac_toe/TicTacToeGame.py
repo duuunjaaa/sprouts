@@ -54,3 +54,20 @@ class TicTacToeGame(Game):
             if i != 2:
                 print("-----")
         print()
+    
+    def __str__(self) -> str:
+        game_str = ""
+        for i in range(3):
+            for j in range(3):
+                if self.board[i][j] == 0:
+                    game_str += " "
+                elif self.board[i][j] == 1:
+                    game_str += "X"
+                else:
+                    game_str += "O"
+                if j != 2:
+                    game_str += "|"
+            game_str += "\n"
+            if i != 2:
+                game_str += "-----\n"
+        return game_str
