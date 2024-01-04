@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from Action import Action
 
 class Game(ABC):
+    done : bool
     @abstractmethod
     def __init__(self):
         pass
