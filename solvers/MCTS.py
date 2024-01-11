@@ -5,8 +5,7 @@ import math
 import random
 from copy import deepcopy
 from graphviz import Digraph
-
-
+from tqdm import tqdm
 
 class Node:
 	def __init__(self, game:Game): 
@@ -18,8 +17,6 @@ class Node:
 		self.children :list[Node] = [None for _ in range(children_count)]
 		self.reward :int = game.get_state_value()
 
-from graphviz import Digraph
-import math
 
 class Node:
     def __init__(self, game):
@@ -31,9 +28,6 @@ class Node:
         self.reward = game.get_state_value()
         self.parent = None  # Add parent attribute
 
-import networkx as nx
-import matplotlib.pyplot as plt
-import math
 
 class Node:
     def __init__(self, game):
@@ -51,7 +45,7 @@ class MCTS:
 	def monte_carlo_tree_search(self, gejm:Game) -> Action:
 		root = Node(gejm)
 		self.expansion(root)
-		for i in range(10000):
+		for i in tqdm(range(1500)):
 			l = []
 			res = self.selection(root, l)
 			if(res.game.done == True):
@@ -66,7 +60,7 @@ class MCTS:
 	def uct(self, node, parentNode) -> float:
 		if(node.n == 0):
 			return(float("inf"))
-		return(float(node.w)/node.n) + 20*math.sqrt((np.log(parentNode.n))/node.n)
+		return(float(node.w)/node.n) + 10*math.sqrt((np.log(parentNode.n))/node.n)
 
 	def selection(self, node, l) -> Node:
 		l.append(node)
